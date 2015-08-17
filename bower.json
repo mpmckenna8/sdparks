@@ -1,0 +1,22 @@
+{
+  "name": "sdparks",
+  "version": "0.0.1",
+  "authors": [
+    "mpmckenna8 <mpmckenna8@me.com>"
+  ],
+  "description": "To explore the parks of San Diego",
+  "main": "index.html",
+  "keywords": [
+    "leaflet",
+    "map",
+    "geojson"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
