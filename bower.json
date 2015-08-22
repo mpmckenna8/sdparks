@@ -18,5 +18,11 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "leaflet": "~0.7.3",
+    "bootstrap": "~3.3.5",
+    "leaflet.markercluster": "~0.4.0",
+    "leaflet.locatecontrol": "~0.44.0"
+  }
 }

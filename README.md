@@ -1,5 +1,21 @@
 Switched boroughs with parks in app.js.
 
+Data to dos:
+  Make the geojson much more compact by eliminating extraneous properties.
+  Switch typeahead with lunr.js for the little search functionality
+  I guess just try putting stuff into cartoDB and looking at what their API will do for me.
+
+
+
+Style todos:
+  Redo all the layer selecter things and legend and stuff.
+
+
+For dissolve of parks on the
+
+ogr2ogr ogrparkies.shp /Users/matthewmckenna/Documents/job/greeninfo/sdParks/parks/sdParks.shp -dialect sqlite -sql "SELECT ST_Union(geometry), UNIT_NAME FROM sdParks GROUP BY UNIT_NAME"
+
+
 
 
 
