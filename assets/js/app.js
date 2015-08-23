@@ -121,11 +121,25 @@ var mapquestOSM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.
   subdomains: ["otile1", "otile2", "otile3", "otile4"],
   attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA.'
 });
+
+
+var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+var ocmlink = '<a href="http://thunderforest.com/">Thunderforest</a>';
+var openCycleMap = L.tileLayer(
+    'http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+    attribution: '&copy; '+mapLink+' Contributors & '+ocmlink,
+
+    maxZoom: 18,
+    });
+
+
 var mapquestOAM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
   maxZoom: 18,
   subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"],
   attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a>. Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'
 });
+
+
 var mapquestHYB = L.layerGroup([L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
   maxZoom: 18,
   subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"]
@@ -151,11 +165,12 @@ var parks = L.geoJson(null, {
       fill: "#ccece6",
       opacity: .5,
       weight:.4,
-      clickable: false
+      clickable: true
     };
   },
   onEachFeature: function (feature, layer) {
-//    console.log(feature);
+  //  console.log(feature);
+    layer.bindPopup('Park Name is ' + feature.properties.UNIT_NAME)
 
 //  console.log(boroughSearch)
 
@@ -173,8 +188,9 @@ var parks = L.geoJson(null, {
 
   }
 });
-$.getJSON("data/parksInfo.geojson", function (data) {
-  parks.addData(data);
+$.getJSON("data/parkstopo.topojson", function (data) {
+  //  console.log(topojson.feature(data, data.objects.ogrparkies));
+  parks.addData(topojson.feature(data, data.objects.ogrparkies));
 });
 
 
@@ -225,14 +241,14 @@ $.getJSON("data/camps.geojson", function (data) {
   map.addLayer(campsLayer);
 });
 
-
+// mapquestOSM
 
 map = L.map("map", {
   zoom: 10,
   center: [32.802222, -116.979378],
-  layers: [mapquestOSM, parks, markerClusters, highlight],
+  layers: [ mapquestOSM, openCycleMap, parks, markerClusters, highlight],
   zoomControl: false,
-  attributionControl: false
+  attributionControl:true,
 });
 
 /* Layer control listeners that allow for a single markerClusters layer */
@@ -329,7 +345,8 @@ if (document.body.clientWidth <= 767) {
 var baseLayers = {
   "Street Map": mapquestOSM,
   "Aerial Imagery": mapquestOAM,
-  "Imagery with Streets": mapquestHYB
+  "Imagery with Streets": mapquestHYB,
+  "Cycle Map": openCycleMap
 };
 
 var groupedOverlays = {
@@ -368,10 +385,10 @@ $(document).one("ajaxStop", function () {
   sizeLayerControl();
   /* Fit map to parks bounds */
   map.fitBounds(parks.getBounds());
-  //featureList = new List("features",
-  //                        {valueNames: ["feature-name"]});
+  featureList = new List("features",
+                          {valueNames: ["feature-name"]});
 
-//  featureList.sort("feature-name", {order:"asc"});
+  featureList.sort("feature-name", {order:"asc"});
 /*
   var parksBH = new Bloodhound({
     name: "Boroughs",
@@ -385,28 +402,21 @@ $(document).one("ajaxStop", function () {
   });
   */
 
-  var theatersBH = new Bloodhound({
-    name: "Theaters",
-    datumTokenizer: function (d) {
-      return Bloodhound.tokenizers.whitespace(d.name);
-    },
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: theaterSearch,
-    limit: 10
-  });
+
 
 
 
   var geonamesBH = new Bloodhound({
     name: "GeoNames",
     datumTokenizer: function (d) {
-      console.log(d)
+    //  console.log(d)
       return Bloodhound.tokenizers.whitespace(d.name);
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
       url: "http://api.geonames.org/searchJSON?username=bootleaf&featureClass=P&maxRows=5&countryCode=US&name_startsWith=%QUERY",
       filter: function (data) {
+        console.log(data)
         return $.map(data.geonames, function (result) {
           return {
             name: result.name + ", " + result.adminCode1,
@@ -428,6 +438,44 @@ $(document).one("ajaxStop", function () {
     },
     limit: 10
   });
+
+  geonamesBH.initialize();
+
+
+  /* instantiate the typeahead UI */
+$("#searchbox").typeahead({
+  minLength: 3,
+  highlight: true,
+  hint: false
+},  {
+  name: "GeoNames",
+  displayKey: "name",
+  source: geonamesBH.ttAdapter(),
+  templates: {
+    header: "<h4 class='typeahead-header'><img src='assets/img/globe.png' width='25' height='25'>&nbsp;GeoNames</h4>"
+  }
+})
+.on("typeahead:selected", function (obj, datum) {
+
+  if (datum.source === "GeoNames") {
+      map.setView([datum.lat, datum.lng], 14);
+    }
+  if ($(".navbar-collapse").height() > 50) {
+      $(".navbar-collapse").collapse("hide");
+    }
+  })
+  .on("typeahead:opened", function () {
+    $(".navbar-collapse.in").css("max-height", $(document).height() - $(".navbar-header").height());
+    $(".navbar-collapse.in").css("height", $(document).height() - $(".navbar-header").height());
+  }).on("typeahead:closed", function () {
+    $(".navbar-collapse.in").css("max-height", "");
+    $(".navbar-collapse.in").css("height", "");
+  });
+  $(".twitter-typeahead").css("position", "static");
+  $(".twitter-typeahead").css("display", "block");
+
+
+
 
 });
 

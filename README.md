@@ -7,6 +7,8 @@ Data to dos:
 
 
 
+
+
 Style todos:
   Redo all the layer selecter things and legend and stuff.
 
@@ -14,6 +16,21 @@ Style todos:
 For dissolve of parks on the
 
 ogr2ogr ogrparkies.shp /Users/matthewmckenna/Documents/job/greeninfo/sdParks/parks/sdParks.shp -dialect sqlite -sql "SELECT ST_Union(geometry), UNIT_NAME FROM sdParks GROUP BY UNIT_NAME"
+
+
+SQL query to get the distances to parks in ascending order from a point, in the example around SF.
+    select unit_name, ST_Distance( geom ,ST_GeomFromText('POINT(-122.3521 37.122)')) from parkspoly order by st_distance;
+
+// Timespent
+
+1.5 hours (8/15) Initial opening of files and looking through them + research into relevant comparison web apps and examining how they work.
+2.5 hours (8/17) Converting .shp files into more internet friendly .geojson files and integrating my data into bootleaf. Learning how all the things in this version of bootleaf are working
+1.5 hours (8/18)  Looking into ways to optimize performance for the data I have and the needs of the app. Trying out topojson for the parks polygons and that works ok but I could also try the
+
+
+
+
+
 
 
 
