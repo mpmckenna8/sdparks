@@ -64,6 +64,7 @@ input[type="radio"], input[type="checkbox"] {
   width: 100%;
   top: 103px;
   bottom: 0px;
+  margin-top: 40px;
   overflow: auto;
 }
 .leaflet-control-layers {
@@ -169,4 +170,21 @@ input[type="radio"], input[type="checkbox"] {
   .leaflet-control-container {
     display: none !important;
   }
+}
+
+.parko {
+  height:10px;
+  width:20px;
+  fill:green;
+  background:green;
+}
+
+#parkinfo{
+  display:none;
+  position:relative;
+  width:20%;
+  height:20%;
+  height: 100px;
+width: 100%;
+
 }
