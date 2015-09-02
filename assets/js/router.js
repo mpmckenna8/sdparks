@@ -59,22 +59,27 @@ workspace = Backbone.Router.extend({
     console.log('this got called should make a table here maybe.')
     for(i in rows){
       var facti = rows[i].first_fac_;
-      console.log(facti=== 'Basketball court');
+      var bball = rows[i].sum_bsktbl;
+      var picnic = rows[i].sum_pcnc_b;
+      var skateing = rows[i].sum_skateb;
+
+
+      console.log(bball > 0);
       if(!activs.agency){
         activs.agency = rows[i].agncy_name;
       }
-      if(facti=== 'Basketball court'){
+      if(bball > 0){
         activs.basketball = true;
         console.log('basketball changed')
 
       }
-      else if(facti === 'Covered picnic area'){
+     if(picnic > 0){
         activs.picnic = true;
       }
       else if(facti === 'Tennis/racquet court'){
         activs.tennis = true;
       }
-      else if(facti === 'Skate park'){
+      if(skateing > 0){
         activs.skate = true;
       }
       else if(facti){
@@ -92,19 +97,19 @@ workspace = Backbone.Router.extend({
   //  console.log(act)
     if(act.basketball){
       console.log($('.parkactrow'))
-      $('.parkactrow').append('<td>Basketball</td>')
+      $('.parkactrow').append('<tr><td>Basketball</td></tr>')
     }
     if(act.picnic){
       console.log($('.parkactrow'))
-      $('.parkactrow').append('<td>Covered picnic area</td>')
+      $('.parkactrow').append('<tr><td>Covered picnic area</td></tr>')
     }
     if(act.tennis){
       console.log($('.parkactrow'))
-      $('.parkactrow').append('<td>Tennis Courts</td>')
+      $('.parkactrow').append('<tr><td>Tennis Courts</td></tr>')
     }
     if(act.skate){
       console.log($('.parkactrow'))
-      $('.parkactrow').append('<td>Skate park</td>');
+      $('.parkactrow').append('<tr><td>Skate park</td></tr>');
     }
   }
 

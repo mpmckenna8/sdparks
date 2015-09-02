@@ -1,7 +1,6 @@
 Switched boroughs with parks in app.js.
 
 Data to dos:
-  Make the geojson much more compact by eliminating extraneous properties.
   Switch typeahead with lunr.js for the little search functionality
   I guess just try putting stuff into cartoDB and looking at what their API will do for me.
 
@@ -13,16 +12,14 @@ One idea is to show the closest parks to each given campsite, but should probabl
 
 
 
-
-
 Style todos:
   Redo all the layer selecter things and legend and stuff.
-
 
 For dissolve of parks on the
 
 ogr2ogr ogrparkies.shp /Users/matthewmckenna/Documents/job/greeninfo/sdParks/parks/sdParks.shp -dialect sqlite -sql "SELECT ST_Union(geometry), UNIT_NAME FROM sdParks GROUP BY UNIT_NAME"
 
+Aslo convert to topojson to make use of all thos shared geometries in the polygons.
 
 SQL query to get the distances to parks in ascending order from a point, in the example around SF.
     select unit_name, ST_Distance( geom ,ST_GeomFromText('POINT(-122.3521 37.122)')) from parkspoly order by st_distance;
@@ -31,6 +28,9 @@ SQL query to get the distances to parks in ascending order from a point, in the 
 sql for getting all the parks with a given actvity, should probably use with DISTINCT
 
   select unit_name FROM parkspoly WHERE first_fac_='Swim Center';
+
+  Actually better to use WHERE sum_skateb>0 because first_fac will only hold one value.
+
 some activity names are:
   Tennis/racquet court
   Skate park
@@ -57,7 +57,7 @@ some activity names are:
 
 2 hours 8/25 Exploring meaningful sql queries for the parks data.  Also setting up parks to be displayed in the sidebar and integrating the parks and campsites into the #searchbox
 .  
-3 hours: Making the search work with new data, and integrating new features into sidebar.
+5 hours: Making the search work with new data, and integrating new features into sidebar. Figuring out what kind of clientside routing I'd be able to use
 
 3 hrs 8/30 Trying to integrate Cartodb map layers I created into this map. But only the legend ever shows up.
 The following link has the closest example to what should work but I'm not sure about how these layers are being sent.
@@ -66,10 +66,12 @@ http://gis.stackexchange.com/questions/127771/unable-to-integrate-cartodb-into-l
 
 2.5 hours 8/31: Getting things set up to share
 SQL query to get all the parks with a given activity.
-select distinct on (unit_name) unit_name, city, first_fac_ from parkspoly where first_fac_='Basketball court';
+  select distinct on (unit_name) unit_name, city, first_fac_ from parkspoly where first_fac_='Basketball court';
+Better one to select specific sum field for each activity:
+  select unit_name FROM parkspoly WHERE sum_skateb>0;
 
 
-
+Fixing sort button
 
 
 

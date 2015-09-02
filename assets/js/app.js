@@ -183,7 +183,7 @@ var mapquestHYB = L.layerGroup([L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sa
 })]);
 
 
-
+var cartoLayer;
 
 var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
 var ocmlink = '<a href="http://thunderforest.com/">Thunderforest</a>';
@@ -422,7 +422,7 @@ var baseLayers = {
   "Cycle Map": openCycleMap,
 //  "Street Map": mapquestOSM,
   "Aerial Imagery": mapquestOAM,
-  "Imagery with Streets": mapquestHYB
+  "Imagery with Streets": mapquestHYB,
 };
 
 
@@ -466,6 +466,21 @@ var cartoLayer = cartodb.createLayer(map, 'http://mpmckenna8.cartodb.com/api/v2/
   });
 
   */
+  var layerUrl = 'https://mpmckenna8.cartodb.com/api/v2/viz/a2e07e4a-1b54-11e3-b7e7-2900374a7889/viz.json';
+      cartodb.createLayer(map, layerUrl)
+       // .addTo(map)
+          .on('done', function(layer) {
+            cartoLayer = layer;
+            //  layer.addTo(map);
+            })
+          .on('error', function(err) {
+               console.log('there was a error', err) //log the error
+            });
+
+      L.tileLayer('https://dnv9my2eseobd.cloudfront.net/v3/cartodb.map-4xtxp73f/{z}/{x}/{y}.png',
+      {
+        attribution: 'Mapbox <a href="http://mapbox.com/about/maps" target="_blank">Terms &amp; Feedback</a>'
+        }).addTo(map);
 
 
 /* Highlight search box text on click */
