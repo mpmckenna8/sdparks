@@ -1,4 +1,4 @@
-var map, featureList, parksSearch = [], campSearch = [], museumSearch = [];
+var featureList, parksSearch = [], campSearch = [], museumSearch = [];
 var workspace; // this variable is going to hold the router.
 $(window).resize(function() {
   sizeLayerControl();
@@ -22,7 +22,7 @@ $("#about-btn").click(function() {
 });
 
 $("#full-extent-btn").click(function() {
-  map.fitBounds(parks.getBounds());
+//  map.fitBounds(parks.getBounds());
   $(".navbar-collapse.in").collapse("hide");
   return false;
 });
@@ -82,6 +82,7 @@ function sidebarClick(id) {
     map.invalidateSize();
     }
   }
+  /*
   else if (parks.getLayer(id)){
 
     console.log('its a parko', this, parks.getLayer(id));
@@ -93,6 +94,7 @@ function sidebarClick(id) {
     //parks;
 
   }
+  */
 }
 
 function syncSidebar() {
@@ -104,7 +106,7 @@ function syncSidebar() {
   var mapbou = map.getBounds();
   camps.eachLayer(function (layer) {
   //  console.log(layer.getLatLng())
-    if (map.hasLayer(campsLayer)) {
+    if (map.hasLayer(camps)) {
       if (map.getBounds().contains(layer.getLatLng())) {
         $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/tent.svg"></td><td class="feature-name">' + layer.feature.properties.SITE_NAME_ + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
@@ -112,8 +114,9 @@ function syncSidebar() {
   });
 
 
-  /* Loop through parks layer and add only features which are in the map bounds */
+  /* Loop through parks layer and add only features which are in the map bounds
 // getting the center of each bounds to see if it's in the current view.
+
   parks.eachLayer(function(layer){
     var cenlay = layer.getBounds().getCenter();
   //  console.log(cenlay);
@@ -129,6 +132,8 @@ function syncSidebar() {
       }
     }
   })
+
+  */
 
 
   /* Update list.js featureList */
@@ -156,42 +161,8 @@ console.log(featureList);
 }
 
 /* Basemap Layers */
+// put the code for these in the basemaps.js file
 
-
-
-var mapquestOSM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png", {
-  maxZoom: 19,
-  subdomains: ["otile1", "otile2", "otile3", "otile4"],
-  attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA.'
-});
-
-
-var mapquestOAM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
-  maxZoom: 18,
-  subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"],
-  attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a>. Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'
-});
-
-
-var mapquestHYB = L.layerGroup([L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
-  maxZoom: 18,
-  subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"]
-}), L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/hyb/{z}/{x}/{y}.png", {
-  maxZoom: 19,
-  subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"],
-  attribution: 'Labels courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA. Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'
-})]);
-
-
-var cartoLayer;
-
-var mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
-var ocmlink = '<a href="http://thunderforest.com/">Thunderforest</a>';
-var openCycleMap = L.tileLayer(
-    'http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
-    attribution: '&copy; '+mapLink+' Contributors & '+ocmlink,
-    maxZoom: 18,
-    });
 
 
 /* Overlay Layers */
@@ -202,39 +173,6 @@ var highlightStyle = {
   fillOpacity: 0.7,
   radius: 10
 };
-
-var parks = L.geoJson(null, {
-  style: function (feature) {
-    return {
-      color: "#00441b",
-      fill: "#ccece6",
-      opacity: .5,
-      weight:.4,
-      clickable: true
-    };
-  },
-  onEachFeature: function (feature, layer) {
-  //  console.log(feature);
-
-    layer.bindPopup('Park Name is ' + feature.properties.UNIT_NAME + ". <a class='parkPop' href='#/park/" + feature.properties.UNIT_NAME  + "'>Get more info</a>" )
-
-
-    //  console.log('pushing new feature')
-    parksSearch.push({
-      name: layer.feature.properties.UNIT_NAME,
-      source: "Parks",
-      id: L.stamp(layer),
-      bounds: layer.getBounds()
-    });
-
-
-
-  }
-});
-$.getJSON("data/parkstopo.topojson", function (data) {
-  //  console.log(topojson.feature(data, data.objects.ogrparkies));
-  parks.addData(topojson.feature(data, data.objects.ogrparkies));
-});
 
 
 
@@ -262,6 +200,7 @@ var camps = L.geoJson(null, {
     });
   },
   onEachFeature: function (feature, layer) {
+  //  console.log(feature);
     if (feature.properties) {
       var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.SITE_NAME_ + "</td></tr>" +  "<tr><th>Agency</th><td>" + feature.properties.AGENCY_ + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.WEBSITE_ + "' target='_blank'>" + feature.properties.WEBSITE_ + "</a></td></tr>" + "<tr class='parkclose'><th>Closest Parks</th></tr></table>";
       layer.on({
@@ -279,8 +218,9 @@ var camps = L.geoJson(null, {
         }
       });
 
+      console.log(feature)
 
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + feature.geometry.coordinates[0] + '" lng="' + feature.geometry.coordinates[1] + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/tent.svg"></td><td class="feature-name">' + layer.feature.properties.SITE_NAME_ + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
 
       campSearch.push(
@@ -294,55 +234,44 @@ var camps = L.geoJson(null, {
         }
       )
 
-
-
-
-
-
     }
   }
 });
 $.getJSON("data/camps.geojson", function (data) {
   camps.addData(data);
-  map.addLayer(campsLayer);
+  camps.addTo(markerClusters);
+//  markerClusters.addTo(map);
 });
 
-// mapquestOSM
 
-map = L.map("map", {
+// #mapstart
+var map = L.map("map", {
   zoom: 10,
   center: [32.902222, -116.979378],
-  layers: [ mapquestOSM, openCycleMap, parks, markerClusters, highlight],
   zoomControl: false,
   attributionControl:true,
+  layers:[openCycleMap, markerClusters],
+  maxZoom:20,
 })
-// moved this over to carto.js
-/*
-.on('click', function(e){
-  //console.log(e);
-});
-*/
 
 
-// above click event logs basic click event stuff to js console. there is a latlng property which has the lat long
-/* Layer control listeners that allow for a single markerClusters layer */
-map.on("overlayadd", function(e) {
-  if (e.layer === campsLayer) {
-    markerClusters.addLayer(camps);
-    syncSidebar();
-  }
+cartoLayer = cartodb.createLayer(map, 'http://mpmckenna8.cartodb.com/api/v2/viz/bf965a6a-486a-11e5-a399-0e018d66dc29/viz.json')
+  //.addTo(map)
+  .on('done', function(layer) {
+    //do stuff
+  //  console.log('adding cartodblayer', layer);
+//    layer.zIndex = 2;
+    //map.options.layers.push(cartoLayer)
+    layer.setZIndex(2)
+    .addTo(map);
 
-});
+//    groupedOverlays.Reference.Water = layer;
+  //  layer.setZLevel(0);
 
-map.on("overlayremove", function(e) {
-  if (e.layer === campsLayer) {
-    markerClusters.removeLayer(camps);
-    syncSidebar();
-  }
-
-});
-
-
+  })
+  .on('error', function(err) {
+    alert("some error occurred: " + err);
+  });
 
 /* Filter sidebar feature list to only show features in current map bounds */
 map.on("moveend", function (e) {
@@ -418,69 +347,27 @@ if (document.body.clientWidth <= 767) {
   var isCollapsed = false;
 }
 
-var baseLayers = {
-  "Cycle Map": openCycleMap,
-//  "Street Map": mapquestOSM,
-  "Aerial Imagery": mapquestOAM,
-  "Imagery with Streets": mapquestHYB,
-};
 
 
 
-var groupedOverlays = {
-  "Points of Interest": {
-    "<img src='assets/img/tent.svg' width='24' height='28'>&nbsp;Campsites": campsLayer,
-  },
-  "Reference": {
-    "Parks": parks,
-  //  "Water": cartoLayer,
-  //  "Subway Lines": subwayLines
-  }
-};
-
-var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
-  collapsed: isCollapsed
-}).addTo(map);
-
-/*
-var cartoLayer = cartodb.createLayer(map, 'http://mpmckenna8.cartodb.com/api/v2/viz/bf965a6a-486a-11e5-a399-0e018d66dc29/viz.json')
-  .addTo(map)
-  .on('done', function(layer) {
-    //do stuff
-    console.log('adding cartodblayer')
-
-
-
-
-//    groupedOverlays.Reference.Water = layer;
-  //  layer.setZLevel(0);
-
-
-
-
-
-
-  })
-  .on('error', function(err) {
-    alert("some error occurred: " + err);
+map.on("overlayadd", function(e) {
+    console.log(e)
+    if (e.layer === camps) {
+      markerClusters.addLayer(camps);
+      syncSidebar();
+    }
+    if (e.layer ==='bobb') {
+      markerClusters.addLayer(museums);
+      syncSidebar();
+    }
   });
 
-  */
-  var layerUrl = 'https://mpmckenna8.cartodb.com/api/v2/viz/a2e07e4a-1b54-11e3-b7e7-2900374a7889/viz.json';
-      cartodb.createLayer(map, layerUrl)
-       // .addTo(map)
-          .on('done', function(layer) {
-            cartoLayer = layer;
-            //  layer.addTo(map);
-            })
-          .on('error', function(err) {
-               console.log('there was a error', err) //log the error
-            });
-
-      L.tileLayer('https://dnv9my2eseobd.cloudfront.net/v3/cartodb.map-4xtxp73f/{z}/{x}/{y}.png',
-      {
-        attribution: 'Mapbox <a href="http://mapbox.com/about/maps" target="_blank">Terms &amp; Feedback</a>'
-        }).addTo(map);
+  map.on("overlayremove", function(e) {
+    if (e.layer === camps) {
+      markerClusters.removeLayer(camps);
+      syncSidebar();
+    }
+  })
 
 
 /* Highlight search box text on click */
@@ -577,12 +464,34 @@ $(document).one("ajaxStop", function () {
   campsBH.initialize();
 
 
+
+
+var baseLayers = {
+  "OSM Cycle Map": openCycleMap,
+  "Mapquest Sat": mapquestOAM ,
+  "mapbox outdoors": mapboxTiles,
+}
+
+var groupedOverlays = {
+  "POIs":
+  {
+    "Campsites <img src='assets/img/tent.svg' height='10px' width='10px'><\img>": camps
+  }
+}
+var options = { };
+
+var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
+  collapsed: isCollapsed
+}).addTo(map);
+
   /* instantiate the typeahead UI */
 $("#searchbox").typeahead({
   minLength: 3,
   highlight: true,
   hint: false
-}, {
+},
+/*
+{
   name:"ParkSearch",
   displayKey:"name",
   source: parksBH.ttAdapter(),
@@ -590,6 +499,7 @@ $("#searchbox").typeahead({
     header: "<h4 class='typeahead-header'><img src='assets/img/trees.svg' width='24' height='28' class='parkSearch' >&nbsp;Parks</h4>",
   }
 },
+*/
 {
   name:"CampSearch",
   displayKey: "name",
@@ -613,6 +523,7 @@ $("#searchbox").typeahead({
   if (datum.source === "GeoNames") {
       map.setView([datum.lat, datum.lng], 14);
     }
+    /*
   if (datum.source === "Parks"){
     console.log(parks)
     parks.eachLayer(function(d){
@@ -635,14 +546,15 @@ $("#searchbox").typeahead({
     })
 
   }
+  */
   if (datum.source === "camps"){
     map.setView([datum.lat, datum.lng], 17);
 
     console.log(map._layers)
     map._layers[datum.id].fire("click");
 
-
   }
+
   if ($(".navbar-collapse").height() > 50) {
       $(".navbar-collapse").collapse("hide");
     }
@@ -650,7 +562,8 @@ $("#searchbox").typeahead({
   .on("typeahead:opened", function () {
     $(".navbar-collapse.in").css("max-height", $(document).height() - $(".navbar-header").height());
     $(".navbar-collapse.in").css("height", $(document).height() - $(".navbar-header").height());
-  }).on("typeahead:closed", function () {
+  })
+  .on("typeahead:closed", function () {
     $(".navbar-collapse.in").css("max-height", "");
     $(".navbar-collapse.in").css("height", "");
   });
@@ -663,13 +576,12 @@ $("#searchbox").typeahead({
 
 
 
-
 // Leaflet patch to make layer control scrollable on touch browsers
 var container = $(".leaflet-control-layers")[0];
 if (!L.Browser.touch) {
-  L.DomEvent
-  .disableClickPropagation(container)
-  .disableScrollPropagation(container);
+//  L.DomEvent
+//  .disableClickPropagation(container)
+//  .disableScrollPropagation(container);
 } else {
   L.DomEvent.disableClickPropagation(container);
 }
