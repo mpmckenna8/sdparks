@@ -1,19 +1,27 @@
-Switched boroughs with parks in app.js.
+Project to create a web app using data about San Diego area Parks and camp grounds.
+
+## Overview
+
+Began just plugging custom data into BootLeaf but changed quite a few things and moved things around.  
+
+In the carto branch of this project I atempted to use the CartoDB layers API to display the parks and was somewhat successful. Though the layer does not show up with non-initial base-maps. Though the click event for popups does work so it may not be necessary to add and remove the layer each basemap change. The layer comes from https://mpmckenna8.cartodb.com/api/v2/viz/bf965a6a-486a-11e5-a399-0e018d66dc29/viz.json.
+
+It also implements a few features utilizing the CartoDB sql api like to find a few of the closest parks in the info window for campsites. After some research it seems the CartoDB api is just loading the layer as images as simply as possible with on click event which makes a call to cartoDB for the attributes in the popup.  Need to decide how to deal with the parks attributes, Loading them all at one time would probably be easiest but also leave a lot of data in mmemory, so will attempt to request things from CartoDB as needed.
+
+
 
 Data to dos:
-  Switch typeahead with lunr.js for the little search functionality
   I guess just try putting stuff into cartoDB and looking at what their API will do for me.
 
-Made an example CartoDB sql query for all the parks closest to a given point in the carto.js file in assets/js directory.
+  Made an example CartoDB sql query for all the parks closest to a given point in the carto.js file in assets/js directory.
 
-For some good documentation as to the carto db sql api https://github.com/Vizzuality/CartoDB-Tutorials/blob/master/cartodb-js/basic_data_queries.md had some good examples.
+  For some good documentation as to the carto db sql api https://github.com/Vizzuality/CartoDB-Tutorials/blob/master/cartodb-js/basic_data_queries.md had some good examples.
 
-One idea is to show the closest parks to each given campsite, but should probably preprocess for that, a better thing would be to just show the closest parks and/or camps to the given user.
-
+One idea is to show the closest parks to each given campsite, but should probably preprocess for that, a better thing would be to just show the closest parks and/or camps to the given user. Implemented but havent implemented the find closes parks feature.
 
 
 Style todos:
-  Redo all the layer selecter things and legend and stuff.
+  Redo all the layer selecter things and legend and stuff. Style layer and maybe remove cartoDB legend from the cartoDB Project.
 
 For dissolve of parks on the
 
@@ -42,37 +50,6 @@ some activity names are:
   Covered picnic area
 
   camping = 1
-
-
-// Timespent
-
-1.5 hours (8/15) Initial opening of files and looking through them + research into relevant comparison web apps and examining how they work.
-
-2.5 hours (8/17) Converting .shp files into more internet friendly .geojson files and integrating my data into bootleaf. Learning how all the things in this version of bootleaf are working
-1.5 hours (8/18)  Looking into ways to optimize performance for the data I have and the needs of the app. Trying out topojson for the parks polygons and that works ok but I could also try the
-
-2 hours 8/20 Importing data to cartodb, exploring different map layer outputs with different combinations of the data.  Also creating a local postgis database of the data to experiment with.
-
-2 hours 8/22 Learning the CartoDB api, Overview of different uses and focusing on the uses I'll have for it.  Decided to definitely use the sql api. made an example call in carto.js file.  Will get details about each park and possibly distances to parks, or things like closest parks to a given camp site.
-
-2 hours 8/25 Exploring meaningful sql queries for the parks data.  Also setting up parks to be displayed in the sidebar and integrating the parks and campsites into the #searchbox
-.  
-5 hours: Making the search work with new data, and integrating new features into sidebar. Figuring out what kind of clientside routing I'd be able to use
-
-3 hrs 8/30 Trying to integrate Cartodb map layers I created into this map. But only the legend ever shows up.
-The following link has the closest example to what should work but I'm not sure about how these layers are being sent.
-http://gis.stackexchange.com/questions/127771/unable-to-integrate-cartodb-into-leaflet-map
-
-
-2.5 hours 8/31: Getting things set up to share
-SQL query to get all the parks with a given activity.
-  select distinct on (unit_name) unit_name, city, first_fac_ from parkspoly where first_fac_='Basketball court';
-Better one to select specific sum field for each activity:
-  select unit_name FROM parkspoly WHERE sum_skateb>0;
-
-
-Fixing sort button
-
 
 
 

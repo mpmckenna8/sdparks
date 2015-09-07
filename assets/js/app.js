@@ -22,7 +22,7 @@ $("#about-btn").click(function() {
 });
 
 $("#full-extent-btn").click(function() {
-//  map.fitBounds(parks.getBounds());
+  map.fitBounds(camps.getBounds());
   $(".navbar-collapse.in").collapse("hide");
   return false;
 });
@@ -106,11 +106,11 @@ function syncSidebar() {
   var mapbou = map.getBounds();
   camps.eachLayer(function (layer) {
   //  console.log(layer.getLatLng())
-    if (map.hasLayer(camps)) {
+
       if (map.getBounds().contains(layer.getLatLng())) {
         $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/tent.svg"></td><td class="feature-name">' + layer.feature.properties.SITE_NAME_ + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
-    }
+
   });
 
 
@@ -218,7 +218,7 @@ var camps = L.geoJson(null, {
         }
       });
 
-      console.log(feature)
+    //  console.log(feature)
 
       $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + feature.geometry.coordinates[0] + '" lng="' + feature.geometry.coordinates[1] + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/tent.svg"></td><td class="feature-name">' + layer.feature.properties.SITE_NAME_ + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
@@ -259,7 +259,8 @@ cartoLayer = cartodb.createLayer(map, 'http://mpmckenna8.cartodb.com/api/v2/viz/
   //.addTo(map)
   .on('done', function(layer) {
     //do stuff
-  //  console.log('adding cartodblayer', layer);
+    console.log('adding cartodblayer', layer);
+    console.log(cartoLayer);
 //    layer.zIndex = 2;
     //map.options.layers.push(cartoLayer)
     layer.setZIndex(2)
