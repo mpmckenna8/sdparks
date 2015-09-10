@@ -10,6 +10,12 @@ workspace = Backbone.Router.extend({
     console.log('options')
   },*/
   parkie: function(query){
+    if(map.hasLayer(perks)){
+
+        map.removeLayer(perks);
+        console.log('theres already a park in there');
+    }
+
     console.log(query);
     // I'm going to want to clear away the campsite information hide it
     // then display a parks info window.
@@ -20,7 +26,7 @@ workspace = Backbone.Router.extend({
 
       if(parky === d.feature.properties.UNIT_NAME){
         console.log('do something with this route');
-        console.log(d.feature);
+      //  console.log(d.feature);
         map.fitBounds(d);
         d.setStyle({
           fillColor:"purple",
@@ -51,6 +57,12 @@ workspace = Backbone.Router.extend({
   $("#featureModal").modal("show");
 
   parkActs(parky, tabgo)
+
+
+
+  parkgeo(parky)
+
+
   var activs = {
     basketball:false,
 
@@ -83,7 +95,7 @@ workspace = Backbone.Router.extend({
         activs.skate = true;
       }
       else if(facti){
-        console.log(facti);
+      //  console.log(facti);
       }
     }
     addToActs(activs);
