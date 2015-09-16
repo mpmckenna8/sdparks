@@ -1,3 +1,5 @@
+var  parksSearch = [];
+
 var sql = new cartodb.SQL({ user: 'mpmckenna8' });
 
 console.log('trying to do a query')
@@ -13,6 +15,31 @@ sql.execute("SELECT unit_name, ST_Distance( the_geom ,ST_GeomFromText('POINT(-12
       })
 
 */
+
+sql.execute("SELECT DISTINCT ON (unit_name) unit_name, cartodb_id FROM parksinfo ORDER BY unit_name;")
+  .done(function(data) {
+      console.log(data.rows);
+      var parkli;
+      for( i in data.rows ){
+        parkli = data.rows[i];
+        if (parkli.unit_name){
+          parksSearch.push(
+            {
+              name: parkli.unit_name,
+              source:"Parks",
+              id: parkli.cartodb_id,
+              link: parkli.unit_name.replace(/ /g, '_')
+            }
+          )
+        }
+      }
+
+      searchStart();
+    })
+  .error(function(errors) {
+        // errors contains a list of errors
+          console.log("errors:" + errors);
+      })
 
 
 function parkActs(pname, cb){
@@ -64,7 +91,7 @@ function closeParks(point){
       for(i in data.rows){
         console.log(data.rows[i])
         var parkname = data.rows[i].unit_name;
-        $('.parkclose').append("<tr> <td> <a href='#park/" +parkname.replace(/ /g, '_') +"'>" + parkname + "</a></td></tr>");
+        $('.parkclose').append("<tr> <td> <a href='#park/" + parkname.replace(/ /g, '_') +"'>" + parkname + "</a></td></tr>");
 
       }
 
@@ -119,18 +146,16 @@ function parkgeo(pname, cb){
   perks =  L.geoJson(geoj, {
       style:{
         color: 'purple',
-
-      stroke:'black',
-      weight:3,
-      fillOpacity: .3,
-      className:'blooper'},
+        stroke:'black',
+        weight:3,
+        fillOpacity: .3,
+        className:'blooper'},
     onEachFeature: function (feature, layer) {
-      console.log(feature);
+    //  console.log(feature);
       layer.bindPopup(feature.properties.name);
 
     }
   }).addTo(map)
-
 
     map.fitBounds(perks)
   }

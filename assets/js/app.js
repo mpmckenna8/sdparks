@@ -1,4 +1,4 @@
-var featureList, parksSearch = [], campSearch = [], museumSearch = [];
+var featureList, campSearch = [], museumSearch = [];
 var workspace; // this variable is going to hold the router.
 $(window).resize(function() {
   sizeLayerControl();
@@ -146,13 +146,6 @@ function syncSidebar() {
   });
 
 
-/*
-
-console.log(featureList);
-
-
-*/
-
 //var hackerList = new List('features', options);
 
 //hackerList.add( { name: 'Jonas', city:'Berlin' } );
@@ -162,7 +155,6 @@ console.log(featureList);
 
 /* Basemap Layers */
 // put the code for these in the basemaps.js file
-
 
 
 /* Overlay Layers */
@@ -402,16 +394,7 @@ $(document).one("ajaxStop", function () {
   featureList.sort("feature-name", {order:"asc"});
 
 
-  var parksBH = new Bloodhound({
-    name: "ParkSearch",
-    datumTokenizer: function (d) {
-    //  console.log(d)
-      return Bloodhound.tokenizers.whitespace(d.name);
-    },
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: parksSearch,
-    limit: 10
-  });
+
 
   var campsBH = new Bloodhound({
     name:"CampSearch",
@@ -426,6 +409,57 @@ $(document).one("ajaxStop", function () {
 
 
 
+
+
+
+
+var baseLayers = {
+  "OSM Cycle Map": openCycleMap,
+  "Mapquest Sat": mapquestOAM ,
+  "mapbox outdoors": mapboxTiles,
+}
+
+var groupedOverlays = {
+  "POIs":
+  {
+    "Campsites <img src='assets/img/tent.svg' height='10px' width='10px'><\img>": camps
+  }
+}
+var options = { };
+
+var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
+  collapsed: isCollapsed
+}).addTo(map);
+
+
+
+});
+
+
+/* instantiate the typeahead UI */
+function searchStart(){
+
+  var campsBH = new Bloodhound({
+    name:"CampSearch",
+    datumTokenizer: function (d){
+    //  console.log(d);
+      return Bloodhound.tokenizers.whitespace(d.name)
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    local: campSearch,
+    limit:10
+  })
+
+  var parksBH = new Bloodhound({
+    name: "ParkSearch",
+    datumTokenizer: function (d) {
+    //  console.log(d)
+      return Bloodhound.tokenizers.whitespace(d.name);
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    local: parksSearch,
+    limit: 10
+  });
 
   var geonamesBH = new Bloodhound({
     name: "GeoNames",
@@ -460,121 +494,85 @@ $(document).one("ajaxStop", function () {
     limit: 10
   });
 
-  geonamesBH.initialize();
   parksBH.initialize();
-  campsBH.initialize();
+
+
+    geonamesBH.initialize();
+
+    campsBH.initialize();
 
 
 
 
-var baseLayers = {
-  "OSM Cycle Map": openCycleMap,
-  "Mapquest Sat": mapquestOAM ,
-  "mapbox outdoors": mapboxTiles,
-}
+  $("#searchbox").typeahead({
+    minLength: 3,
+      highlight: true,
+      hint: false
+    },
 
-var groupedOverlays = {
-  "POIs":
-  {
-    "Campsites <img src='assets/img/tent.svg' height='10px' width='10px'><\img>": camps
-  }
-}
-var options = { };
-
-var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
-  collapsed: isCollapsed
-}).addTo(map);
-
-  /* instantiate the typeahead UI */
-$("#searchbox").typeahead({
-  minLength: 3,
-  highlight: true,
-  hint: false
-},
-/*
 {
-  name:"ParkSearch",
-  displayKey:"name",
-  source: parksBH.ttAdapter(),
-  templates:{
-    header: "<h4 class='typeahead-header'><img src='assets/img/trees.svg' width='24' height='28' class='parkSearch' >&nbsp;Parks</h4>",
-  }
+name:"ParkSearch",
+displayKey:"name",
+source: parksBH.ttAdapter(),
+templates:{
+  header: "<h4 class='typeahead-header'><img src='assets/img/trees.svg' width='24' height='28' class='parkSearch' >&nbsp;Parks</h4>",
+}
 },
-*/
+
 {
-  name:"CampSearch",
-  displayKey: "name",
-  source:campsBH.ttAdapter(),
-  templates:{
-    header:"<h3 class='typeahead-header'>Campsites yo</h3>"
-  }
+name:"CampSearch",
+displayKey: "name",
+source:campsBH.ttAdapter(),
+templates:{
+  header:"<h3 class='typeahead-header'>Campsites</h3>"
+}
 },
- {
-  name: "GeoNames",
-  displayKey: "name",
-  source: geonamesBH.ttAdapter(),
-  templates: {
-    header: "<h4 class='typeahead-header'><img src='assets/img/globe.png' width='25' height='25'>&nbsp;GeoNames</h4>"
-  }
+{
+name: "GeoNames",
+displayKey: "name",
+source: geonamesBH.ttAdapter(),
+templates: {
+  header: "<h4 class='typeahead-header'><img src='assets/img/globe.png' width='25' height='25'>&nbsp;GeoNames</h4>"
+}
 })
 .on("typeahead:selected", function (obj, datum) {
-  console.log(datum)
-  console.log(obj)
-  var obje = obj;
-  if (datum.source === "GeoNames") {
-      map.setView([datum.lat, datum.lng], 14);
-    }
-    /*
-  if (datum.source === "Parks"){
-    console.log(parks)
-    parks.eachLayer(function(d){
-  //    console.log(d)
-      if(datum.name == d.feature.properties.UNIT_NAME){
-
-        workspace.navigate('#blahblah', {trigger:true});
-
-      d.setStyle({fillColor :'red'})
-      map.fitBounds(d);
-      }
-      else{
-        console.log(d)
-      d.setStyle({
-        fillColor:"#ccece6",
-
-      })
-        //d.options
-      }
-    })
-
-  }
-  */
-  if (datum.source === "camps"){
-    map.setView([datum.lat, datum.lng], 17);
-
-    console.log(map._layers)
-    map._layers[datum.id].fire("click");
-
+console.log(datum)
+console.log(obj)
+var obje = obj;
+if (datum.source === "GeoNames") {
+    map.setView([datum.lat, datum.lng], 14);
   }
 
-  if ($(".navbar-collapse").height() > 50) {
-      $(".navbar-collapse").collapse("hide");
-    }
-  })
-  .on("typeahead:opened", function () {
-    $(".navbar-collapse.in").css("max-height", $(document).height() - $(".navbar-header").height());
-    $(".navbar-collapse.in").css("height", $(document).height() - $(".navbar-header").height());
-  })
-  .on("typeahead:closed", function () {
-    $(".navbar-collapse.in").css("max-height", "");
-    $(".navbar-collapse.in").css("height", "");
-  });
-  $(".twitter-typeahead").css("position", "static");
-  $(".twitter-typeahead").css("display", "block");
+if (datum.source === "Parks"){
+  //console.log(parks)
+  console.log('parks in the typeahead');
+  router.navigate('#park/' + datum.link, {trigger: true, replace: true})
 
+}
 
+if (datum.source === "camps"){
+  map.setView([datum.lat, datum.lng], 17);
+
+  console.log(map._layers)
+  map._layers[datum.id].fire("click");
+
+}
+
+if ($(".navbar-collapse").height() > 50) {
+    $(".navbar-collapse").collapse("hide");
+  }
+})
+.on("typeahead:opened", function () {
+  $(".navbar-collapse.in").css("max-height", $(document).height() - $(".navbar-header").height());
+  $(".navbar-collapse.in").css("height", $(document).height() - $(".navbar-header").height());
+})
+.on("typeahead:closed", function () {
+  $(".navbar-collapse.in").css("max-height", "");
+  $(".navbar-collapse.in").css("height", "");
 });
-
-
+$(".twitter-typeahead").css("position", "static");
+$(".twitter-typeahead").css("display", "block");
+}
 
 
 // Leaflet patch to make layer control scrollable on touch browsers
