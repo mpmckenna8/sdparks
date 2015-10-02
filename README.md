@@ -54,6 +54,23 @@ some activity names are:
 
 
 
+
+Example of using CartoDB SQL api to get 5 closest park polygons from the database. But they won't be distinct things here.
+/*
+// example query to get all parks closes to a given point
+sql.execute("SELECT unit_name, ST_Distance( the_geom ,ST_GeomFromText('POINT(-122.4167 37.7833)', 4326)) as dissy FROM parksinfo ORDER BY dissy LIMIT 5;")
+  .done(function(data) {
+      console.log(data.rows);
+        })
+  .error(function(errors) {
+        // errors contains a list of errors
+          console.log("errors:" + errors);
+      })
+
+*/
+
+
+
 BootLeaf
 ========
 

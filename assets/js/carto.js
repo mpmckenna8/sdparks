@@ -3,18 +3,6 @@ var  parksSearch = [];
 var sql = new cartodb.SQL({ user: 'mpmckenna8' });
 
 console.log('trying to do a query')
-/*
-// example query to get all parks closes to a given point
-sql.execute("SELECT unit_name, ST_Distance( the_geom ,ST_GeomFromText('POINT(-122.4167 37.7833)', 4326)) as dissy FROM parksinfo ORDER BY dissy LIMIT 5;")
-  .done(function(data) {
-      console.log(data.rows);
-        })
-  .error(function(errors) {
-        // errors contains a list of errors
-          console.log("errors:" + errors);
-      })
-
-*/
 
 sql.execute("SELECT DISTINCT ON (unit_name) unit_name, cartodb_id FROM parksinfo ORDER BY unit_name;")
   .done(function(data) {
