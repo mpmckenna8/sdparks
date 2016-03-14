@@ -108,11 +108,11 @@ function syncSidebar() {
   //  console.log(layer.getLatLng())
 
       if (map.getBounds().contains(layer.getLatLng())) {
+
         $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/tent.svg"></td><td class="feature-name">' + layer.feature.properties.SITE_NAME_ + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
 
   });
-
 
   /* Loop through parks layer and add only features which are in the map bounds
 // getting the center of each bounds to see if it's in the current view.
@@ -134,7 +134,6 @@ function syncSidebar() {
   })
 
   */
-
 
   /* Update list.js featureList */
 

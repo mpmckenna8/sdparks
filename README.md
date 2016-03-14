@@ -11,7 +11,6 @@ It also implements a few features utilizing the CartoDB sql api like to find a f
 
 
 Data to dos:
-  I guess just try putting stuff into cartoDB and looking at what their API will do for me.
 
   Made an example CartoDB sql query for all the parks closest to a given point in the carto.js file in assets/js directory.
 

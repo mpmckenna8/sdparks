@@ -5,10 +5,6 @@ workspace = Backbone.Router.extend({
     "park/:query": "parkie",
     "*actions": "defaultRoute"
   },
-  /*
-  initialize: function(opts) {
-    console.log('options')
-  },*/
   parkie: function(query){
     if(map.hasLayer(perks)){
 
